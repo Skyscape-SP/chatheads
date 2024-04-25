@@ -11,6 +11,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import static net.minecraft.text.TextColor.fromRgb;
 
 public class ChatHeadsInit implements DedicatedServerModInitializer {
     //region Constants
-    public static final String MODID = "chatheads";
+    public static final String MODID = "chatheads", PLAYER = "player";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
     public static final TextColor[][] DEFAULT_HEAD_TEXTURE = new TextColor[][]{   //hex 0xC01044 -> TextColor.fromRgb(0xC01044)
             {fromRgb(0x191919), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x191919)},
@@ -47,9 +48,9 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
         PolymerResourcePackUtils.addModAssets(MODID);
 
         //Register Placeholder
-        Placeholders.register(new Identifier(MODID, "player"), (ctx, arg) -> {
+        Placeholders.register(new Identifier(MODID, PLAYER), (ctx, arg) -> {
             if (ctx.gameProfile() == null || ctx.server().getUserCache() == null) return PlaceholderResult.value(DEFAULT_HEAD);
-            if ((arg == null || arg.isEmpty()) && ctx.gameProfile() != null)
+            if (arg == null || arg.isEmpty())
                 return PlaceholderResult.value(paintHead(HEAD_CACHE.getOrDefault(ctx.gameProfile().getId(), DEFAULT_HEAD_TEXTURE)));
             final var playerProfile = ctx.server().getUserCache().findByName(arg);
             return playerProfile.map(gameProfile -> PlaceholderResult.value(paintHead(HEAD_CACHE.getOrDefault(gameProfile.getId(), DEFAULT_HEAD_TEXTURE))))
@@ -69,7 +70,7 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
     }
 
     //region Util
-    public static Text paintHead(TextColor[][] head) {
+    public static @NotNull Text paintHead(TextColor[][] head) {
         MutableText text = Text.empty();
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
