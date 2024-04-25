@@ -1,13 +1,13 @@
 package com.campersamu.chatheads.mixin;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TextColor;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -48,11 +48,16 @@ public abstract class DownloadHeadOnJoin {
 
     //region Util
     @Unique
-    private TextColor[][] chatheads$getPlayerHead(final GameProfile profile, final ServerPlayerEntity player){
+    private TextColor[][] chatheads$getPlayerHead(final GameProfile profile, final ServerPlayerEntity player) {
         //get skin url
-        final String playerSkinUrl = server.getSessionService().getTextures(profile).skin().getUrl();
+        final MinecraftProfileTexture playerSkin = server.getSessionService().getTextures(profile).skin();
 
-        //return default head if null
+        //return default head if skin is null
+        if (playerSkin == null) return DEFAULT_HEAD_TEXTURE;
+
+        final String playerSkinUrl = playerSkin.getUrl();
+
+        //return default head if skin url is null
         if (playerSkinUrl == null) return DEFAULT_HEAD_TEXTURE;
 
         //pull the picture
