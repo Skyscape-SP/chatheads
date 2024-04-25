@@ -2,13 +2,17 @@ package com.campersamu.chatheads;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
+import eu.pb4.polymer.autohost.impl.AutoHost;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -19,6 +23,7 @@ import static net.minecraft.text.TextColor.fromRgb;
 public class ChatHeadsInit implements DedicatedServerModInitializer {
     //region Constants
     public static final String MODID = "chatheads";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
     public static final TextColor[][] DEFAULT_HEAD_TEXTURE = new TextColor[][]{   //hex 0xC01044 -> TextColor.fromRgb(0xC01044)
             {fromRgb(0x191919), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x191919)},
             {fromRgb(0x191919), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x0c0c0c), fromRgb(0x191919)},
@@ -36,6 +41,7 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
     //endregion
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
     public void onInitializeServer() {
         //Add Mod Resources to Polymer Resource Pack
         PolymerResourcePackUtils.addModAssets(MODID);
@@ -48,6 +54,17 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
             return playerProfile.map(gameProfile -> PlaceholderResult.value(paintHead(HEAD_CACHE.getOrDefault(gameProfile.getId(), DEFAULT_HEAD_TEXTURE))))
                     .orElseGet(() -> PlaceholderResult.value(DEFAULT_HEAD));
         });
+
+        if (!AutoHost.config.enabled && !FabricLoader.getInstance().isModLoaded("arte")) {
+            LOGGER.warn("""
+              #####################################
+                Polymer AutoHost is not enabled!
+              The heads in chat might appear buggy!
+               Go to config/polymer/autohost.json
+                          to enable it!
+              #####################################
+              """);
+        }
     }
 
     //region Util
