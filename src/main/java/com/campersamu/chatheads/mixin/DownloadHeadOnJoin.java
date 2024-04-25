@@ -20,7 +20,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-import static com.campersamu.chatheads.ChatHeadsInit.*;
+import static com.campersamu.chatheads.ChatHeadsInit.DEFAULT_HEAD_TEXTURE;
+import static com.campersamu.chatheads.ChatHeadsInit.HEAD_CACHE;
+import static com.campersamu.chatheads.ChatHeadsInit.LOGGER;
 import static net.minecraft.text.TextColor.fromRgb;
 
 @Mixin(PlayerManager.class)
@@ -29,9 +31,6 @@ public abstract class DownloadHeadOnJoin {
     @Shadow
     @Final
     private MinecraftServer server;
-    @Shadow
-    @Final
-    private static Logger LOGGER;
     //endregion
 
     //Mixin into the player connect/join event and downlaod the skin for the player (needs a server restart to update)
@@ -61,8 +60,8 @@ public abstract class DownloadHeadOnJoin {
         try {
             image = ImageIO.read(new URL(playerSkinUrl));
         } catch (Exception e) {
-            LOGGER.warn("Failed to get image for " + player.getName().getString());
-            e.printStackTrace();
+            LOGGER.warn("Failed to get image for {}", player.getName().getString());
+            LOGGER.warn(e.toString());
             return DEFAULT_HEAD_TEXTURE;
         }
 
