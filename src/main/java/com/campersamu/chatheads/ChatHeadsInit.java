@@ -48,6 +48,7 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
 
         //Register Placeholder
         Placeholders.register(new Identifier(MODID, "player"), (ctx, arg) -> {
+            if (ctx.gameProfile() == null || ctx.server().getUserCache() == null) return PlaceholderResult.value(DEFAULT_HEAD);
             if ((arg == null || arg.isEmpty()) && ctx.gameProfile() != null)
                 return PlaceholderResult.value(paintHead(HEAD_CACHE.getOrDefault(ctx.gameProfile().getId(), DEFAULT_HEAD_TEXTURE)));
             final var playerProfile = ctx.server().getUserCache().findByName(arg);
