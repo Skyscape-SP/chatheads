@@ -2,8 +2,6 @@ package com.campersamu.chatheads;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.polymer.autohost.impl.AutoHost;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.MutableText;
@@ -44,9 +42,6 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void onInitializeServer() {
-        //Add Mod Resources to Polymer Resource Pack
-        PolymerResourcePackUtils.addModAssets(MODID);
-
         //Register Placeholder
         Placeholders.register(new Identifier(MODID, PLAYER), (ctx, arg) -> {
             if (ctx.gameProfile() == null || ctx.server().getUserCache() == null) return PlaceholderResult.value(DEFAULT_HEAD);
@@ -56,17 +51,6 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
             return playerProfile.map(gameProfile -> PlaceholderResult.value(paintHead(HEAD_CACHE.getOrDefault(gameProfile.getId(), DEFAULT_HEAD_TEXTURE))))
                     .orElseGet(() -> PlaceholderResult.value(DEFAULT_HEAD));
         });
-
-        if (!AutoHost.config.enabled && !FabricLoader.getInstance().isModLoaded("arte")) {
-            LOGGER.warn("""
-              #####################################
-                Polymer AutoHost is not enabled!
-              The heads in chat might appear buggy!
-               Go to config/polymer/autohost.json
-                          to enable it!
-              #####################################
-              """);
-        }
     }
 
     //region Util
@@ -75,10 +59,10 @@ public class ChatHeadsInit implements DedicatedServerModInitializer {
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 text = text
-                        .append(literal("" + (char) (((int) '\uF810') + y)).setStyle(Style.EMPTY.withColor(head[y][x]).withFont(Identifier.of(MODID, "pixel"))))
-                        .append(literal("\uE001").fillStyle(Style.EMPTY.withFont(Identifier.of(MODID, "pixel"))));
+                        .append(literal("" + (char) (((int) '\uF810') + y)).setStyle(Style.EMPTY.withColor(head[y][x]).withFont(Identifier.of("skyblock", "chathead"))))
+                        .append(literal("\uE001").fillStyle(Style.EMPTY.withFont(Identifier.of("skyblock", "chathead"))));
             }
-            text = text.append(literal("\uE008").fillStyle(Style.EMPTY.withFont(Identifier.of(MODID, "pixel"))));
+            text = text.append(literal("\uE008").fillStyle(Style.EMPTY.withFont(Identifier.of("skyblock", "chathead"))));
         }
 
         text.append(literal("  "));
