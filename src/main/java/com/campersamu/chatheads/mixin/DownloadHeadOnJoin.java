@@ -82,7 +82,7 @@ public abstract class DownloadHeadOnJoin {
         for (int x = 40; x < 48; x++) {
             for (int y = 8; y < 16; y++) {
                 int rgb = image.getRGB(x, y);
-                playerHead[y - 8][x - 8] = fromRgb(rgb & 0xffffff);
+                playerHead[y - 8][x - 40] = fromRgb(rgb & 0xffffff);
             }
         }
 
