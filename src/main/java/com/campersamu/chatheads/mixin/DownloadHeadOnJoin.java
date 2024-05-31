@@ -81,7 +81,7 @@ public abstract class DownloadHeadOnJoin {
         //generate overlay
         for (int x = 40; x < 48; x++) {
             for (int y = 8; y < 16; y++) {
-                LOGGER.info('Alpha Value: ' + image.getRGB(x, y) >> 24); // debug
+                LOGGER.info("Alpha Value: " + image.getRGB(x, y) >> 24); // debug
                 if (image.getRGB(x, y) >> 24 == 0xff) {
                     int rgb = image.getRGB(x, y);
                     playerHead[y - 8][x - 8] = fromRgb(rgb & 0xffffff);
