@@ -23,8 +23,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation include("eu.pb4:placeholder-api:${project.papi_version}")
-    modImplementation include("eu.pb4:polymer-resource-pack:${project.polymer_version}")
-    modImplementation include("eu.pb4:polymer-autohost:${project.polymer_version}")
 }
 
 processResources {
